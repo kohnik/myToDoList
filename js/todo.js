@@ -10,8 +10,13 @@ submitBtn.addEventListener("click", addTask);
 numericUpBtn.addEventListener("click", numericUp);
 numericDownBtn.addEventListener("click", numericDown);
 checkboxTheme.addEventListener("click", changeTheme);
+
+
+
 changeTheme();
 downloadLocalStorageTasks();
+
+
 
 function changeTheme() {
   let body = document.querySelector("body");
@@ -19,6 +24,7 @@ function changeTheme() {
   let navbar = document.querySelector(".navbar");
   let dropdownMenu = document.querySelector(".dropdown-menu ");
   let modalContent = document.querySelector(".modal-content");
+  let modalTitle=document.querySelectorAll(".modalTitle")
   let closeX = document.querySelector(".close");
 
   if (checkboxTheme.checked == true) {
@@ -27,6 +33,12 @@ function changeTheme() {
     for (let i = 0; i < titleHeader.length; i++) {
       titleHeader[i].style.color = "white";
     }
+    for(let i=0;i<modalTitle.length;i++)
+    {
+      modalTitle[i].classList.add("color")
+    }
+
+
     navbar.classList.add("blackNavbar");
     closeX.classList.add("NoColor");
     dropdownMenu.style.backgroundColor = "#302d2d77";
@@ -38,6 +50,11 @@ function changeTheme() {
     for (let i = 0; i < titleHeader.length; i++) {
       titleHeader[i].style.color = "black";
     }
+    for(let i=0;i<modalTitle.length;i++)
+    {
+      modalTitle[i].classList.remove("color")
+    }
+
     navbar.classList.remove("blackNavbar");
   }
 }
@@ -48,6 +65,8 @@ function addTask(e) {
   let textArea = form.elements.textarea.value;
   let radioAll = document.querySelectorAll(".form-check-input");
   let color = form.elements.color.value;
+  
+  
   for (let i = 0; i < 3; i++) {
     if (radioAll[i].checked) {
       var priority = radioAll[i].value;
@@ -65,13 +84,25 @@ function addTask(e) {
     modalBackdrop.classList.remove("show");
 
     displayNewTask(title, textArea, priority, color);
-  }
-  let countSuccUnsucc = document.querySelector("#countSuccUnsucc");
+    form.elements.title.value="";
+    form.elements.textarea.value="";
+    for (let i = 0; i < 3; i++) {
+      radioAll[i].checked=false
+    }
+    form.elements.color.value=""
+   
+  
+
+      let countSuccUnsucc = document.querySelector("#countSuccUnsucc");
 
   countSuccUnsucc.innerHTML = `${countSuccUnsucc.innerHTML.split("/")[0]}/${
     +countSuccUnsucc.innerHTML.split("/")[1] + 1
   }`;
+  }
+
 }
+
+
 
 function displayNewTask(title, textArea, priority, color) {
   let date = new Date();
@@ -146,7 +177,7 @@ function createTemplate(
     null,
     "d-flex w-100 justify-content-between"
   );
-  let templateTitle = createElement("h5", `${title}`, "mb-1 color");
+  let templateTitle = createElement("h5", `${title}`, "mb-1 ");
 
   if (!document.querySelectorAll(".liUnCompleted").length) {
     var idTasks = createElement("span", `1`, `idTask`);
@@ -155,16 +186,15 @@ function createTemplate(
   }
 
   let templateDiv3 = createElement("div", null, "date_status");
-  let templateSmall1 = createElement("small", `${priority}`, "mr-2 color");
+  let templateSmall1 = createElement("small", `${priority}`, "mr-2 ");
   let templateSmall2 = createElement(
     "small",
-    `${timeCreation} ${dateCrearion}`,
-    "color"
+    `${timeCreation} ${dateCrearion}`
   );
   let templateTextarea = createElement(
     "small",
     `${textArea}`,
-    "mb-1 w-100 color"
+    "mb-1 w-100 "
   );
 
   let templateDivDropDown = createElement("div", null, "dropdown m-2 dropleft");
@@ -247,20 +277,20 @@ function createTemplateCompleted(
     null,
     "d-flex w-100 justify-content-between"
   );
-  let templateTitle = createElement("h5", `${title}`, "mb-1 color");
+  let templateTitle = createElement("h5", `${title}`, "mb-1 ");
   let idTasks = createElement("span", `${idTask}`, "idTask");
 
   let templateDiv3 = createElement("div", null, "date_status");
-  let templateSmall1 = createElement("small", `${priority}`, "mr-2 color");
+  let templateSmall1 = createElement("small", `${priority}`, "mr-2 ");
   let templateSmall2 = createElement(
     "small",
-    `${timeCreation} ${dateCrearion}`,
-    "color"
+    `${timeCreation} ${dateCrearion}`
+    
   );
   let templateTextarea = createElement(
     "small",
     `${textArea}`,
-    "mb-1 w-100 color"
+    "mb-1 w-100 "
   );
 
   let buttonContainer = createElement("div", null, "dropdown m-2 dropleft");
@@ -394,6 +424,7 @@ function DeleteTask(event) {
 function EditTask(event) {
   let elem = event.target.parentElement.parentElement;
   let title = elem.children[0].children[0].children[0];
+  let id=elem.querySelector(".idTask").innerHTML
   let textarea = elem.children[0].children[1];
   let DateStatus = elem.children[0].children[0].children[2];
   let buttonTaskGroup = event.target.parentElement;
@@ -402,11 +433,15 @@ function EditTask(event) {
   let priority = elem.children[0].children[0].children[2].children[0];
   let priorityText = priority.innerHTML;
   buttonTaskGroup.style.display = "none";
+  
 
+
+  let color=localStorage.getItem(`task__${id}`).split(",")[5]
+  
   let inputTitleText = createElement(
     "span",
     "Title:",
-    "col-sm-1 col-form-label color"
+    "col-sm-1 col-form-label "
   );
   let inputTitle = createElement(
     "input",
@@ -423,7 +458,7 @@ function EditTask(event) {
   let TextaAreaInput = createElement(
     "span",
     "Text:",
-    "col-sm-1 col-form-label color"
+    "col-sm-1 col-form-label "
   );
   let inputTextArea = createElement(
     "input",
@@ -448,26 +483,56 @@ function EditTask(event) {
   rowTextarea.after(buttonEditChoose);
 
   let rowPriority = createElement("div", null, "row row_containerEdit");
-  let PriorityTitle = createElement(
-    "span",
-    "Priority:",
-    "col-sm-1 col-form-label color"
-  );
-  let inputPriority = createElement("input", null, "form-control col-sm-11 ");
-  inputPriority.value = `${priorityText}`;
-
+  // let PriorityTitle = createElement(
+  //   "span",
+  //   "Priority:",
+  //   "col-sm-1 col-form-label "
+  // );
+  rowPriority.innerHTML = `<legend class="col-form-label col-sm-2 pt-0  modalTitle priorityTitle">Priority</legend>
+  <div class="col-sm-10">
+      <div class="form-check">
+          <input class="form-check-input EditCheck" type="radio" name="gridRadios" id="Low" value="Low" required="">
+          <label class="form-check-label  modalTitle" for="Low">
+              Low
+          </label>
+      </div>
+      <div class="form-check">
+          <input class="form-check-input EditCheck" type="radio" name="gridRadios" id="Medium" value="Medium">
+          <label class="form-check-label  modalTitle" for="Medium">
+              Medium
+          </label>
+      </div>
+      <div class="form-check disabled">
+          <input class="form-check-input EditCheck" type="radio" name="gridRadios" id="High" value="High">
+          <label class="form-check-label  modalTitle" for="High">
+              High
+          </label>
+      </div>
+  </div>`
+ 
   rowTextarea.after(rowPriority);
-  rowPriority.append(PriorityTitle);
-  rowPriority.append(inputPriority);
+  let radioAll = document.querySelectorAll(".EditCheck");
+  console.log(radioAll)
+  for(let i=0;i<radioAll.length;i++)
+  {
+    console.log(priorityText)
+    if(radioAll[i].value==priorityText)
+    {
+      radioAll[i].checked=true
+    }
+  }
 
   let rowInputColor = createElement("div", null, "row row_containerEdit");
   let rowInputTitle = createElement(
     "span",
     "Color:",
-    "col-sm-1 col-form-label color"
+    "col-sm-1 col-form-label "
   );
   let inputColor = createElement("input", null, "form-control col-sm-1 ");
+  
   inputColor.type = "color";
+  inputColor.value = `${color}`;
+
   rowPriority.after(rowInputColor);
   rowInputColor.append(rowInputTitle);
   rowInputColor.append(inputColor);
@@ -501,16 +566,25 @@ function buttonEditOk(event) {
   let inputTextArea = taskContainer.children[1].children[1];
   let DateStatus = taskContainer.children[0].children[2];
   let Priority = taskContainer.children[0].children[2].children[0];
-  let inputPriority = taskContainer.children[2].children[1];
+  //let inputPriority = taskContainer.children[2].children[1];
   let inputColor = taskContainer.children[3].children[1];
   let buttonTaskGroup =
     event.target.parentElement.parentElement.parentElement.children[1];
   let id = taskContainer.children[0].children[1].innerHTML;
   title.innerHTML = `${inputTitle.value}`;
   textarea.innerHTML = `${inputTextArea.value}`;
-  Priority.innerHTML = `${inputPriority.value}`;
+  
 
+  let PriorityCheck=taskContainer.querySelectorAll(".EditCheck")
  
+  for(let i=0;i<PriorityCheck.length;i++)
+  {
+    if(PriorityCheck[i].checked)
+    {
+      var inputPriority=PriorityCheck[i].value
+      Priority.innerHTML = inputPriority;
+    }
+  }
   inputTitleName.remove();
   inputTitle.remove();
   taskContainer.children[4].remove();
@@ -523,7 +597,7 @@ function buttonEditOk(event) {
   taskContainer.parentElement.style.backgroundColor = `${inputColor.value}`;
   localStorage.setItem(
     `task__${id}`,
-    `${inputTitle.value},${inputTextArea.value},${inputPriority.value},${
+    `${inputTitle.value},${inputTextArea.value},${inputPriority},${
       DateStatus.children[1].innerHTML.split(" ")[0]
     },${DateStatus.children[1].innerHTML.split(" ")[1]},${
       inputColor.value
@@ -536,8 +610,7 @@ function buttonEditCancel(titleText, textareaText, priorityText) {
   let title = taskContainer.children[0].children[0];
   let inputTitle = taskContainer.children[0].children[4];
   let inputTitleName = taskContainer.children[0].children[3];
-
-  let textarea = taskContainer.children[4];
+  let textarea = taskContainer.children[5];
 
   let DateStatus = taskContainer.children[0].children[2];
 
@@ -550,6 +623,7 @@ function buttonEditCancel(titleText, textareaText, priorityText) {
   textarea.innerHTML = `${textareaText}`;
   inputPriority.innerHTML = `${priorityText}`;
 
+  taskContainer.children[3].remove();
   taskContainer.children[2].remove();
   taskContainer.children[1].remove();
   inputTitleName.remove();
