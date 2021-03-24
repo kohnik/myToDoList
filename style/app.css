@@ -22,7 +22,14 @@
 {
     color:rgba(255, 255, 255, 0.692) !important;
 }
-
+.color
+{
+    color: white;
+}
+.priorityTitle
+{
+    max-width: 7.366667%;
+}
 
 .checkbox-green {
 	display: inline-block;    
